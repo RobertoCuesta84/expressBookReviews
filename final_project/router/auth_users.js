@@ -28,7 +28,7 @@ regd_users.post("/login", (req,res) => {
   const password = req.body.password;
 
   if (!username || !password) {
-    return res.status(404).json({ message: "Error logging in" });
+    return res.status(404).json({ message: "Error logging in." });
   }
 
   if (authenticatedUser(username, password)) {
@@ -44,9 +44,9 @@ regd_users.post("/login", (req,res) => {
 
     req.session.authorization = { accessToken, username };
 
-    return res.status(200).send("User successfully logged in");
+    return res.status(200).send("User successfully logged in.");
   } else {
-    return res.status(208).send("Invalid Login. check username and password");
+    return res.status(208).send("Invalid Login! Please check username and password.");
   }
 });
 
@@ -59,18 +59,17 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   books[isbn].reviews[req.session.authorization["username"]] = review;
   return res
     .status(200)
-    .json({ message: "review succeed", reviews: books[isbn].reviews });
+    .json({ message: "The review was successfully added.", reviews: books[isbn].reviews });
 });
 
 // Remove a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
-  //Write your code here
+ 
   const isbn = req.params.isbn;
-
   delete books[isbn].reviews[req.session.authorization["username"]];
   return res
     .status(200)
-    .json({ message: "review deleted", reviews: books[isbn].reviews });
+    .json({ message: "The review was deleted.", reviews: books[isbn].reviews });
 });
 
 
