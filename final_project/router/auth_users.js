@@ -5,10 +5,11 @@ const regd_users = express.Router();
 
 let users = [];
 
+//   ********** Task 7: Logging in as a registered user
+
 const isValid = (username)=>{ 
   //returns boolean
   //write code to check is the username is valid
-
   const user = users.find((user) => user.username === username);
   return !!user;  
 }
@@ -46,11 +47,14 @@ regd_users.post("/login", (req,res) => {
 
     return res.status(200).send("User successfully logged in.");
   } else {
-    return res.status(208).send("Invalid Login! Please check username and password.");
+    return res.status(208).send("Invalid Login. Please check username and password.");
   }
 });
 
-// Add a book review
+
+
+//  ********** Task 8: Add a book review
+
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
   const isbn = req.params.isbn;
@@ -62,10 +66,12 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     .json({ message: "The review was successfully added.", reviews: books[isbn].reviews });
 });
 
-// Remove a book review
+
+
+// ********** Task 9: Remove a book review
+
 regd_users.delete("/auth/review/:isbn", (req, res) => {
- 
-  const isbn = req.params.isbn;
+   const isbn = req.params.isbn;
   delete books[isbn].reviews[req.session.authorization["username"]];
   return res
     .status(200)
