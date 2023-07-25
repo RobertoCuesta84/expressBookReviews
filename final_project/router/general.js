@@ -113,33 +113,38 @@ public_users.get('/author/:author',function (req, res) {
 // ********** Task 4:   Get all books based on title
 
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  const title = req.params.title;
-  const promise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const filteredBooks = Object.values(books).filter(
-        (b) => b.title === title
-      );
-      return resolve(filteredBooks);
-    }, 100);
-  });
+  let title = req.params.title;
+  let bookArray = Object.entries(books)
 
-  const filteredBooks = await promise;
-
-  if (filteredBooks.length > 0) {
-    return res.status(200).json({ books: filteredBooks });
-  } else {
-    return res.status(404).json({ message: "Books under this title were not found" });
-  }
+  const bookTitle = new Promise((resolve,reject)=>{
+    let filterTitle = bookArray.filter((item)=>item[1].title === title)
+    if(filterTitle)
+    {
+      resolve(filterTitle[0][1])
+    }
+    else{
+      reject({message: `No book was found for the title: ${title}` })
+    }
+  })
+  bookTitle.then((resp)=>{
+    res.status(200).json(resp)
+  }).catch(err=>res.status(403).json({error: err}))
+  
 });
 
 
 
 // ********** Task 5:     Get book reviews
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  const isbn = req.params.isbn;
-  return res.status(200).json({ reviews: books[isbn].reviews });
+  let ISBN = req.params.isbn
+  let book = books[ISBN]
+  if(book)
+  {
+    res.status(200).json(book.reviews)
+  }
+  else{
+    res.status(404).json({message: `No book was found for ISBN number: ${ISBN}`})
+  }
 });
 
 module.exports.general = public_users;
