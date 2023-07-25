@@ -36,31 +36,49 @@ public_users.post("/register", (req,res) => {
 
 public_users.get('/',function (req, res) {
   //Write your code here
-  const promise = new Promise((resolve, reject) => {
-    setTimeout(() => resolve(books), 100);
-  });
-  promise.then((result) => {
-    return res.status(200).json({ books: result });
-  });
-});
+  //res.send(JSON.stringify({books},null,4));
 
+  const bookList = new Promise((resolve,reject)=>{
+
+    if(books){
+      resolve(books)
+    }
+    else
+    {
+      reject({error: 'Book list was not found'})
+    }
+  })
+
+  bookList.then((resp)=>{
+    return res.status(200).json(resp);
+  }).catch(err=>res.status(403).json({error: err}))
+  
+});
 
 
 // ********** Task 2: Get book details based on ISBN
 
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  const promise = new Promise((resolve, reject) => {
-  setTimeout(() => resolve(books[req.params.isbn]), 100);
-  });
 
-  const book = await promise;
-  if (book) {
-    return res.status(200).json({ book });
-  } else {
-    return res.status(404).json({ message: "The book selected was not found." });
-  }
- });
+  //Write your code here
+
+  let isbnNumber = req.params.isbn
+  const bookIsbn = new Promise((resolve, reject)=>{
+    let book = books[isbnNumber]
+    if(book)
+    {
+      resolve(book)
+    }
+    else{
+      reject({error: `No book was found for ISBN number: ${isbnNumber}`})
+    }
+  })
+
+  bookIsbn.then((resp)=>{
+    res.status(200).json(resp)
+  }).catch(err=>res.status(403).json({error: err}))
+  
+});
   
 
 
@@ -69,23 +87,26 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // ********** Task 3:  Get book details based on author
 
 public_users.get('/author/:author',function (req, res) {
+  
   //Write your code here
-  const authorsName = req.params.author;
-  const promise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const filteredBooks = Object.values(books).filter(
-        (b) => b.author === authorsName );
-      resolve(filteredBooks);
-    }, 100);
+  let author = req.params.author;
+  let bookArray = Object.entries(books)
+  const bookAuthor = new Promise((resolve, reject)=>{
 
-  const filteredBooks = await promise;
+    let matchAuthor = bookArray.filter((item)=>item[1].author === author)
+    if(matchAuthor)
+    {
+      resolve(matchAuthor)
+    }
+    else{
+      reject({message: `No book was found for: ${author}`})
+    }
+  })
 
-  if (filteredBooks.length > 0) {
-    return res.status(200).json({ books: filteredBooks });
-  } else {
-    return res.status(404).json({ message: "This author's books were not found." });
-  }
-    
+  bookAuthor.then((resp)=>{
+    res.status(200).json(resp)
+  }).catch(err=>res.status(403).json({error: err}))
+  
 });
 
 
