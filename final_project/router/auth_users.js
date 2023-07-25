@@ -61,9 +61,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const review = req.body.review;
   console.log(req.session.authorization["username"]);
   books[isbn].reviews[req.session.authorization["username"]] = review;
-  return res
-    .status(200)
-    .json({ message: "The review was successfully added.", reviews: books[isbn].reviews });
+  return res.status(200).json({ message: "The review was successfully added.", reviews: books[isbn].reviews });
 });
 
 
@@ -73,9 +71,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 regd_users.delete("/auth/review/:isbn", (req, res) => {
    const isbn = req.params.isbn;
   delete books[isbn].reviews[req.session.authorization["username"]];
-  return res
-    .status(200)
-    .json({ message: "The review was deleted.", reviews: books[isbn].reviews });
+  return res.status(200).json({ message: "The review was succesfully deleted.", book: book});
 });
 
 
